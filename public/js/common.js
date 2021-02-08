@@ -1,8 +1,12 @@
-$('#postTextarea').keyup((event) => {
+$('#postTextarea, #replyTextarea').keyup((event) => {
   const textbox = $(event.target);
   const value = textbox.val().trim();
 
-  const submitButton = $('#submitPostButton');
+  const isModal = textbox.parents('.modal').length === 1;
+
+  const submitButton = isModal
+    ? $('#submitReplyButton')
+    : $('#submitPostButton');
 
   if (submitButton.length === 0) {
     return alert('No submit button found.');
@@ -16,20 +20,46 @@ $('#postTextarea').keyup((event) => {
   submitButton.prop('disabled', false);
 });
 
-$('#submitPostButton').click((event) => {
+$('#submitPostButton, #submitReplyButton').click((event) => {
   const button = $(event.target);
-  const textbox = $('#postTextarea');
+  const isModal = button.parents('.modal').length === 1;
+  const textbox = isModal ? $('#replyTextarea') : $('#postTextarea');
   const data = {
     content: textbox.val(),
   };
 
+  if (isModal) {
+    const id = button.data().id;
+
+    if (id === null) return console.log('Button is is null');
+    data.replyTo = id;
+  }
+
   $.post('/api/posts', data, (postData, status, xhr) => {
-    const html = createPostHtml(postData);
-    $('.postsContainer').prepend(html);
-    textbox.val('');
-    button.prop('disabled', true);
+    if (postData.replyTo) {
+      location.reload();
+    } else {
+      const html = createPostHtml(postData);
+      $('.postsContainer').prepend(html);
+      textbox.val('');
+      button.prop('disabled', true);
+    }
   });
 });
+
+$('#replyModal').on('show.bs.modal', (event) => {
+  const button = $(event.relatedTarget);
+  const postId = getPostIdFromElement(button);
+  $('#submitReplyButton').attr('data-id', postId);
+
+  $.get(`/api/posts/${postId}`, (results) => {
+    outputPosts(results, $('#originalPostContainer'));
+  });
+});
+
+$('#replyModal').on('hidden.bs.modal', () =>
+  $('#originalPostContainer').html('')
+);
 
 $(document).on('click', '.likeButton', (event) => {
   const button = $(event.target);
@@ -85,16 +115,10 @@ const getPostIdFromElement = (el) => {
 
 const createPostHtml = (postData) => {
   if (postData === null) return alert('post object is null');
-
   const isRetweet = postData.retweetData !== undefined;
-  //console.log('isRetweet: ', isRetweet);
   const retweetedBy = isRetweet ? postData.postedBy.username : null;
-  //console.log('retweetedBy: ', retweetedBy);
   postData = isRetweet ? postData.retweetData : postData;
-  //console.log('Post data: ', postData);
-
   const postedBy = postData.postedBy;
-  //console.log('Posted by: ', postedBy);
 
   if (postedBy._id === undefined) {
     return console.log('user object is not populated');
@@ -183,5 +207,22 @@ const timeDifference = (current, previous) => {
     return Math.round(elapsed / msPerMonth) + ' months ago';
   } else {
     return Math.round(elapsed / msPerYear) + ' years ago';
+  }
+};
+
+const outputPosts = (results, container) => {
+  container.html('');
+
+  if (!Array.isArray(results)) {
+    results = [results];
+  }
+
+  results.map((result) => {
+    const html = createPostHtml(result);
+    container.append(html);
+  });
+
+  if (results.length === 0) {
+    container.append('<span class="noResults">Nothing to show</span>');
   }
 };
