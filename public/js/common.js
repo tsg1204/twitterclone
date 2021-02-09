@@ -103,6 +103,15 @@ $(document).on('click', '.retweetButton', (event) => {
   });
 });
 
+$(document).on('click', '.post', (event) => {
+  const element = $(event.target);
+  const postId = getPostIdFromElement(element);
+
+  if (postId !== undefined && !element.is('button')) {
+    window.location.href = `/post/${postId}`;
+  } 
+});
+
 const getPostIdFromElement = (el) => {
   const isRoot = el.hasClass('post');
   const rootEl = isRoot ? el : el.closest('.post');
@@ -143,6 +152,24 @@ const createPostHtml = (postData) => {
                   </span>`;
   }
 
+  let replyFlag = '';
+
+  if (postData.replyTo) {
+    if (!postData.replyTo._id) {
+      return console.log('Reply to is not populated');
+    } else {
+      if (!postData.replyTo.postedBy._id) {
+        return console.log('Posted by to is not populated');
+      }
+    }
+
+    const replyToUsername = postData.replyTo.postedBy.username;
+
+    replyFlag = `<div class="replyFlag">
+                    Replying to <a href="/profile/${replyToUsername}">@${replyToUsername}</a>
+                  </div>`;
+  }
+
   return `<div class="post" data-id='${postData._id}'>
             <div class="postActionContainer">${retweetText}</div>
             <div class="mainContentContainer">
@@ -157,6 +184,7 @@ const createPostHtml = (postData) => {
                   <span class="username">@${postedBy.username}</span>
                   <span class="date">${timestamp}</span>
                 </div>
+                ${replyFlag}
                 <div class="postBody">
                   <span>${postData.content}</span>
                 </div>
