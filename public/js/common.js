@@ -53,7 +53,7 @@ $('#replyModal').on('show.bs.modal', (event) => {
   $('#submitReplyButton').attr('data-id', postId);
 
   $.get(`/api/posts/${postId}`, (results) => {
-    outputPosts(results, $('#originalPostContainer'));
+    outputPosts(results.postData, $('#originalPostContainer'));
   });
 });
 
@@ -109,7 +109,7 @@ $(document).on('click', '.post', (event) => {
 
   if (postId !== undefined && !element.is('button')) {
     window.location.href = `/post/${postId}`;
-  } 
+  }
 });
 
 const getPostIdFromElement = (el) => {
@@ -253,4 +253,21 @@ const outputPosts = (results, container) => {
   if (results.length === 0) {
     container.append('<span class="noResults">Nothing to show</span>');
   }
+};
+
+const outputPostsWithReplies = (results, container) => {
+  container.html('');
+
+  if (results.replyTo !== undefined && results.replyTo._id !== undefined) {
+    const html = createPostHtml(results.replyTo);
+    container.append(html);
+  }
+
+  const mainHtml = createPostHtml(results.postData);
+  container.append(mainHtml);
+
+  results.replies.map((result) => {
+    const html = createPostHtml(result);
+    container.append(html);
+  });
 };
