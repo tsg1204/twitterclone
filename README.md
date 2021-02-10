@@ -1,1 +1,1 @@
-Twitter clone app using Node.js, MongoDB
+Twitter clone app using vanilla js, pug template engine, Socket.io, Node.js, MongoDB
