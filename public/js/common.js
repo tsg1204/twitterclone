@@ -122,7 +122,7 @@ const getPostIdFromElement = (el) => {
   return postId;
 };
 
-const createPostHtml = (postData) => {
+const createPostHtml = (postData, largeFont = false) => {
   if (postData === null) return alert('post object is null');
   const isRetweet = postData.retweetData !== undefined;
   const retweetedBy = isRetweet ? postData.postedBy.username : null;
@@ -144,6 +144,8 @@ const createPostHtml = (postData) => {
     ? 'active'
     : '';
 
+  const largeFontClass = largeFont ? 'largeFont' : '';
+
   let retweetText = '';
 
   if (isRetweet) {
@@ -154,7 +156,7 @@ const createPostHtml = (postData) => {
 
   let replyFlag = '';
 
-  if (postData.replyTo) {
+  if (postData.replyTo && postData.replyTo._id) {
     if (!postData.replyTo._id) {
       return console.log('Reply to is not populated');
     } else {
@@ -170,7 +172,7 @@ const createPostHtml = (postData) => {
                   </div>`;
   }
 
-  return `<div class="post" data-id='${postData._id}'>
+  return `<div class="post ${largeFontClass}" data-id='${postData._id}'>
             <div class="postActionContainer">${retweetText}</div>
             <div class="mainContentContainer">
               <div class="userImageContainer">
@@ -263,7 +265,7 @@ const outputPostsWithReplies = (results, container) => {
     container.append(html);
   }
 
-  const mainHtml = createPostHtml(results.postData);
+  const mainHtml = createPostHtml(results.postData, true);
   container.append(mainHtml);
 
   results.replies.map((result) => {
