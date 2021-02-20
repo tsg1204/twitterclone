@@ -114,7 +114,17 @@ $('#imageUploadButton').click(() => {
   }
   canvas.toBlob((blob) => {
     const formData = new FormData();
+
     formData.append('croppedImage', blob);
+
+    $.ajax({
+      url: '/api/users/profilePicture',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: () => location.reload(),
+    });
   });
 });
 
