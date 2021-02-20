@@ -105,6 +105,19 @@ $('#filePhoto').change(function () {
   }
 });
 
+$('#imageUploadButton').click(() => {
+  const canvas = cropper.getCroppedCanvas();
+
+  if (canvas === null) {
+    alert('Could not upload image. Make sure it is an image file.');
+    return;
+  }
+  canvas.toBlob((blob) => {
+    const formData = new FormData();
+    formData.append('croppedImage', blob);
+  });
+});
+
 $(document).on('click', '.likeButton', (event) => {
   const button = $(event.target);
   const postId = getPostIdFromElement(button);
