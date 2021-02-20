@@ -14,7 +14,7 @@ router.get('/', async (req, res, next) => {
     let isReply = searchObj.isReply === 'true';
     searchObj.replyTo = { $exists: isReply };
     delete searchObj.isReply;
-    console.log(searchObj);
+    //console.log(searchObj);
   }
 
   const results = await getPosts(searchObj);

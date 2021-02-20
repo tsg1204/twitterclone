@@ -36,6 +36,8 @@ const UserSchema = new Schema(
     },
     likes: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     retweets: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
   { timestamps: true }
 );
