@@ -1,5 +1,6 @@
 //globals
-var cropper;
+let cropper;
+let timer;
 
 $('#postTextarea, #replyTextarea').keyup((event) => {
   const textbox = $(event.target);
@@ -218,6 +219,27 @@ $('#coverPhotoUploadButton').click(() => {
       success: () => location.reload(),
     });
   });
+});
+
+$('#userSearchTextbox').keydown((event) => {
+  clearTimeout(timer);
+  const textbox = $(event.target);
+  let value = textbox.val();
+
+  if (value === '' && event.keycode === 8) {
+    //remove user from selection
+    return;
+  }
+
+  timer = setTimeout(() => {
+    value = textbox.val().trim();
+
+    if (value === '') {
+      $('.resultsContainer').html('');
+    } else {
+      searchUsers(value);
+    }
+  }, 1000);
 });
 
 $(document).on('click', '.likeButton', (event) => {
@@ -523,4 +545,26 @@ const createUserHtml = (userData, showFollowButton) => {
               </div>
               ${followButton}
           </div>`;
+};
+
+const searchUsers = (searchTerm) => {
+  $.get('/api/users', { search: searchTerm }, (results) => {
+    outputSelectableUsers(results, $('.resultsContainer'));
+  });
+};
+
+const outputSelectableUsers = (results, container) => {
+  container.html('');
+
+  results.forEach((result) => {
+    if (result._id === userLoggedIn._id) {
+      return;
+    }
+    const html = createUserHtml(result, true);
+    container.append(html);
+  });
+
+  if (results.length === 0) {
+    container.append("<span class='noResults'>No results found</span>");
+  }
 };
