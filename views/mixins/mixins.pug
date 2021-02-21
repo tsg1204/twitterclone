@@ -88,11 +88,11 @@ mixin createCoverPhotoUploadModal()
           button#coverPhotoUploadButton.btn.btn-primary(type='button') Save
 
 mixin createPinnedPostModal()
-  #confirmPinPostModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='confirmPinPostModalLabel', aria-hidden='true')
+  #confirmPinModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='confirmPinModalLabel', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
         .modal-header
-          h5#confirmPinPostModalLabel.modal-title Pin this post?
+          h5#confirmPinModalLabel.modal-title Pin this post?
           button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
         .modal-body
