@@ -317,7 +317,7 @@ const createPostHtml = (postData, largeFont = false) => {
 
   let buttons = '';
   if (postData.postedBy._id === userLoggedIn._id) {
-    buttons = `<button data-id="${postData._id}" data-toggle="modal" data-target="#deletePostModal"><i class='fas fa-times'></i></button>`;
+    buttons = `<button data-id="${postData._id}" data-toggle="modal" data-target="#confirmPinPostModal"><i class='fas fa-thumbtack'></i></button><button data-id="${postData._id}" data-toggle="modal" data-target="#deletePostModal"><i class='fas fa-times'></i></button>`;
   }
 
   return `<div class="post ${largeFontClass}" data-id='${postData._id}'>
