@@ -227,8 +227,15 @@ $('#userSearchTextbox').keydown((event) => {
   const textbox = $(event.target);
   let value = textbox.val();
 
-  if (value === '' && event.keycode === 8) {
+  if (value === '' && (event.which === 8 || event.keyCode === 8)) {
     //remove user from selection
+    selectedUsers.pop();
+    updateSelectedUserHtml();
+    $('.resultsContainer').html('');
+
+    if (selectedUsers.length === 0) {
+      $('#createChatButton').prop('disabled', true);
+    }
     return;
   }
 
@@ -565,7 +572,7 @@ const outputSelectableUsers = (results, container) => {
       return;
     }
 
-    const html = createUserHtml(result, true);
+    const html = createUserHtml(result, false);
     const element = $(html);
 
     element.click(() => {
