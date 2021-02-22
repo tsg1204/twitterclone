@@ -9,5 +9,26 @@ $(document).ready(() => {
 });
 
 const outputChatList = (chatList, container) => {
-  console.log(chatList);
+  container.html('');
+  if (chatList.lenth === 0) {
+    container.append('<span class="noResults">Nothing to show.</span>');
+  }
+
+  chatList.forEach((chat) => {
+    const html = createChatHtml(chat);
+    container.append(html);
+  });
+};
+
+const createChatHtml = (chatData) => {
+  const chatName = 'chat name';
+  const image = '';
+  const latestMessage = 'Latest message';
+
+  return `<a href="/messages/${chatData._id}" class="resultListItem>
+            <div class="resultDetailsContainer">
+              <span class="heading">${chatName}</span>
+              <span class="subText">${latestMessage}</span>
+            </div>
+          </a>`;
 };
