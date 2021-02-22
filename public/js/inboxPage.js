@@ -25,8 +25,8 @@ const createChatHtml = (chatData) => {
   const image = '';
   const latestMessage = 'Latest message';
 
-  return `<a href="/messages/${chatData._id}" class="resultListItem>
-            <div class="resultDetailsContainer">
+  return `<a href="/messages/${chatData._id}" class="resultListItem">
+            <div class="resultsDetailsContainer">
               <span class="heading">${chatName}</span>
               <span class="subText">${latestMessage}</span>
             </div>
