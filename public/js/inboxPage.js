@@ -22,10 +22,11 @@ const outputChatList = (chatList, container) => {
 
 const createChatHtml = (chatData) => {
   const chatName = getChatName(chatData);
-  const image = '';
+  const image = getChatImageElements(chatData);
   const latestMessage = 'Latest message';
 
   return `<a href="/messages/${chatData._id}" class="resultListItem">
+            ${image}
             <div class="resultsDetailsContainer">
               <span class="heading">${chatName}</span>
               <span class="subText">${latestMessage}</span>
@@ -51,4 +52,25 @@ const getOtherChatUsers = (users) => {
   if (users.length === 1) return users;
 
   return users.filter((user) => user._id !== userLoggedIn._id);
+};
+
+const getChatImageElements = (chatData) => {
+  const otherChatUsers = getOtherChatUsers(chatData.users);
+  let groupChatClass = '';
+  let chatImage = getUserChatImageElement(otherChatUsers[0]);
+
+  if (otherChatUsers.length > 1) {
+    groupChatClass = 'groupChatImage';
+    chatImage += getUserChatImageElement(otherChatUsers[1]);
+  }
+
+  return `<div class='resultsImageContainer ${groupChatClass}'>${chatImage}</div>`;
+};
+
+const getUserChatImageElement = (user) => {
+  if (!user || !user.profilePic) {
+    return alert('User passed into function is invalid');
+  }
+
+  return `<img src='${user.profilePic}' alt="User's profile pic">`;
 };
