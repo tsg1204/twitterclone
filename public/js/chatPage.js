@@ -1,3 +1,9 @@
+$(document).ready(() => {
+  $.get(`/api/chats/${chatId}`, (data) =>
+    $('#chatName').text(getChatName(data))
+  );
+});
+
 $('#chatNameButton').click(() => {
   const name = $('#chatNameTextbox').val().trim();
 
