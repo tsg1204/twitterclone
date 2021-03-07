@@ -43,5 +43,11 @@ const messageSubmitted = () => {
 };
 
 const sendMessage = (content) => {
-  console.log(content);
+  $.post(
+    'api/messages',
+    { content: content, chaitId: chatId },
+    (data, status, xhr) => {
+      console.log(data);
+    }
+  );
 };
