@@ -23,7 +23,7 @@ const outputChatList = (chatList, container) => {
 const createChatHtml = (chatData) => {
   const chatName = getChatName(chatData);
   const image = getChatImageElements(chatData);
-  const latestMessage = 'Latest message';
+  const latestMessage = getLatestMessage(chatData.latestMessage);
 
   return `<a href="/messages/${chatData._id}" class="resultListItem">
             ${image}
@@ -32,6 +32,16 @@ const createChatHtml = (chatData) => {
               <span class="subText ellipsis">${latestMessage}</span>
             </div>
           </a>`;
+};
+
+const getLatestMessage = (latestMessage) => {
+  if (latestMessage !== undefined) {
+    console.log('Latest message: ', latestMessage);
+    const sender = latestMessage.sender;
+    return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`;
+  }
+
+  return 'New chat';
 };
 
 const getChatImageElements = (chatData) => {

@@ -3,6 +3,7 @@ const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
 const Messages = require('../../schemas/MessageSchema');
+const Chat = require('../../schemas/ChatSchema');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -19,7 +20,16 @@ router.post('/', async (req, res, next) => {
   };
 
   Messages.create(newMessage)
-    .then((results) => res.status(201).send(results))
+    .then(async (message) => {
+      message = await message.populate('sender').execPopulate();
+      message = await message.populate('chat').execPopulate();
+
+      Chat.findByIdAndUpdate(req.body.chatId, {
+        latestMessage: message,
+      }).catch((error) => console.log(error));
+
+      res.status(201).send(message);
+    })
     .catch((error) => {
       console.log(error);
       res.sendStatus(400);
