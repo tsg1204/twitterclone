@@ -36,7 +36,7 @@ const createChatHtml = (chatData) => {
 
 const getLatestMessage = (latestMessage) => {
   if (latestMessage !== undefined) {
-    console.log('Latest message: ', latestMessage);
+    //console.log('Latest message: ', latestMessage);
     const sender = latestMessage.sender;
     return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`;
   }
