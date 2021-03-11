@@ -1,4 +1,7 @@
 $(document).ready(() => {
+  socket.emit('join room', chatId);
+  socket.on('typing', () => console.log('user is typing'));
+
   $.get(`/api/chats/${chatId}`, (data) =>
     $('#chatName').text(getChatName(data))
   );
@@ -45,12 +48,18 @@ $('.sendMessageButton').click(() => {
 });
 
 $('.inputTextbox').keydown((event) => {
+  updateTyping();
+
   if (event.which === 13 && !event.shiftKey) {
     messageSubmitted();
     //prevent new line
     return false;
   }
 });
+
+const updateTyping = () => {
+  socket.emit('typing', chatId);
+};
 
 const addMessagesHtmlToPage = (html) => {
   $('.chatMessages').append(html);

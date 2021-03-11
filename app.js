@@ -70,6 +70,15 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
   res.status(200).render('home.pug', payload);
 });
 
+//client socket connection
 io.on('connection', (socket) => {
-  console.log('connected to socket io');
+  //console.log('connected to socket io');
+  socket.on('setup', (userData) => {
+    //console.log(userData.firstName);
+    socket.join(userData._id);
+    socket.emit('connected');
+  });
+
+  socket.on('join room', (room) => socket.join(room));
+  socket.on('typing', (room) => socket.in(room).emit('typing'));
 });
