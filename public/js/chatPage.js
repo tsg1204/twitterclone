@@ -18,6 +18,8 @@ $(document).ready(() => {
 
     addMessagesHtmlToPage(messagesHtml);
     scrollToBotton(false);
+    $('.loadingSpinnerContainer').remove();
+    $('.chatContainer').css('visibility', 'visible');
   });
 });
 
@@ -52,8 +54,6 @@ $('.inputTextbox').keydown((event) => {
 
 const addMessagesHtmlToPage = (html) => {
   $('.chatMessages').append(html);
-
-  //TODO: scroll to bottom
 };
 
 const messageSubmitted = () => {
