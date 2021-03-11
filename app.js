@@ -8,6 +8,12 @@ const mongoDB = require('./database');
 const session = require('express-session');
 const sessionSecret = require('./dev/keys');
 
+const server = app.listen(port, () => {
+  console.log('Listening on port: ', port);
+});
+
+const io = require('socket.io')(server, { pingTimeout: 60000 });
+
 mongoDB.connectDB();
 
 app.set('View engine', 'pug');
@@ -64,6 +70,6 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
   res.status(200).render('home.pug', payload);
 });
 
-const server = app.listen(port, () => {
-  console.log('Listening on port: ', port);
+io.on('connection', (socket) => {
+  console.log('connected to socket io');
 });
