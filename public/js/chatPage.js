@@ -5,15 +5,19 @@ $(document).ready(() => {
 
   $.get(`/api/chats/${chatId}/messages`, (data) => {
     const messages = [];
+    let lastSenderId = '';
 
-    data.forEach((message) => {
-      const html = createMessageHtml(message);
+    data.forEach((message, index) => {
+      const html = createMessageHtml(message, data[index + 1], lastSenderId);
+
       messages.push(html);
+      lastSenderId = message.sender._id;
     });
 
     const messagesHtml = messages.join('');
 
     addMessagesHtmlToPage(messagesHtml);
+    scrollToBotton(false);
   });
 });
 
@@ -83,20 +87,66 @@ const addChatMessageHtml = (message) => {
     return;
   }
 
-  const messageDiv = createMessageHtml(message);
+  const messageDiv = createMessageHtml(message, null, '');
 
   $('.chatMessages').append(messageDiv);
+  scrollToBotton(true);
 };
 
-const createMessageHtml = (message) => {
+const createMessageHtml = (message, nextMessage, lastSenderId) => {
+  const sender = message.sender;
+  const senderName = sender.firstName + ' ' + sender.lastName;
+  const currentSenderId = sender._id;
+  const nextSenderId =
+    nextMessage !== undefined && nextMessage !== null
+      ? nextMessage.sender._id
+      : '';
+  const isFirst = lastSenderId !== currentSenderId;
+  const isLast = nextSenderId !== currentSenderId;
   const isMine = message.sender._id === userLoggedIn._id;
-  const liClassName = isMine ? 'mine' : 'theirs';
+  let liClassName = isMine ? 'mine' : 'theirs';
+  let nameElement = '';
+
+  if (isFirst) {
+    liClassName += ' first';
+
+    if (!isMine) {
+      nameElement = `<span class='senderName>${senderName}</span>`;
+    }
+  }
+
+  let profileImage = '';
+
+  if (isLast) {
+    liClassName += ' last';
+    profileImage = `<img src='${sender.profilePic}'>`;
+  }
+
+  let imageContainer = '';
+  if (!isMine) {
+    imageContainer = `<div class='imageContainer'>
+                      ${profileImage}
+                    </div>`;
+  }
 
   return `<li class='message ${liClassName}'>
+          ${imageContainer}
           <div class='messageContainer'>
+          ${nameElement}
             <span class='messageBody'>
               ${message.content}
             </span>
           </div>
         </li>`;
+};
+
+const scrollToBotton = (animated) => {
+  const container = $('.chatMessages');
+  const scrollHeight = container[0].scrollHeight;
+
+  if (animated) {
+    container.animate({ scrollTop: scrollHeight }, 'slow');
+  } else {
+    container.scrollTop(scrollHeight);
+  }
 };
