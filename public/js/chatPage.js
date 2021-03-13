@@ -93,6 +93,8 @@ const messageSubmitted = () => {
   if (content != '') {
     sendMessage(content);
     $('.inputTextbox').val('');
+    socket.emit('stop typing', chatId);
+    typing = false;
   }
 };
 
@@ -108,6 +110,10 @@ const sendMessage = (content) => {
       }
 
       addChatMessageHtml(data);
+
+      if (conected) {
+        socket.emit('new message', data);
+      }
     }
   );
 };
