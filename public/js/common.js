@@ -336,7 +336,8 @@ $(document).on('click', '.followButton', (event) => {
 
       let followersLabel = $('#followersValue');
       if (followersLabel.length !== 0) {
-        let followersText = parseInt(followersLabel.text());
+        let followersText = followersLabel.text();
+        followersText = parseInt(followersText);
         followersLabel.text(followersText + difference);
       }
     },
