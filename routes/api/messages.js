@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const Messages = require('../../schemas/MessageSchema');
 const Chat = require('../../schemas/ChatSchema');
 const User = require('../../schemas/UserSchema');
+const Notification = require('../../schemas/NotificationSchema');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -26,9 +27,11 @@ router.post('/', async (req, res, next) => {
       message = await message.populate('chat').execPopulate();
       message = await User.populate(message, { path: 'chat.users' });
 
-      Chat.findByIdAndUpdate(req.body.chatId, {
+      const chat = await Chat.findByIdAndUpdate(req.body.chatId, {
         latestMessage: message,
       }).catch((error) => console.log(error));
+
+      insertNotification(chat, message);
 
       res.status(201).send(message);
     })
@@ -37,5 +40,18 @@ router.post('/', async (req, res, next) => {
       res.sendStatus(400);
     });
 });
+
+const insertNotification = (chat, message) => {
+  chat.users.forEach((userId) => {
+    if (userId === message.sender._id.toString()) return;
+
+    Notification.insertNotification(
+      userId,
+      message.sender._id,
+      'newMessage',
+      message.chat._id
+    );
+  });
+};
 
 module.exports = router;
