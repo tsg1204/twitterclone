@@ -111,7 +111,7 @@ const sendMessage = (content) => {
 
       addChatMessageHtml(data);
 
-      if (conected) {
+      if (connected) {
         socket.emit('new message', data);
       }
     }
