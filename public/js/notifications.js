@@ -10,7 +10,7 @@ const outptNotificationList = (notifications, container) => {
     container.append(html);
   });
 
-  if (notification.length === 0) {
+  if (notifications.length === 0) {
     container.append('<span class="noResults">Nothing to show.</span>');
   }
 };
@@ -21,7 +21,7 @@ const createNotificationHtml = (notification) => {
   const href = getNotificationUrl(notification);
   const className = notification.opened ? '' : 'active';
 
-  return `<a href='${href}' class='resultListItem notification ${className}'>
+  return `<a href='${href}' class='resultListItem notification ${className}' data-id='${notification._id}'>
           <div class='resultsImageContainer'>
             <img src='${userFrom.profilePic}'>
           </div>
@@ -63,7 +63,7 @@ const getNotificationUrl = (notification) => {
     notification.notificationType === 'postLike' ||
     notification.notificationType === 'reply'
   ) {
-    url = `/posts/${notification.entityId}`;
+    url = `/post/${notification.entityId}`;
   } else if (notification.notificationType === 'follow') {
     url = `/profile/${notification.entityId}`;
   }
