@@ -662,8 +662,9 @@ const getOtherChatUsers = (users) => {
 };
 
 const messageReceived = (newMessage) => {
-  if ($('.chatContainer').length === 0) {
+  if ($(`[data-room="${newMessage.chat._id}"]`).length === 0) {
     //show popup notification
+    showMessagePopup(newMessage);
   } else {
     addChatMessageHtml(newMessage);
   }
@@ -713,7 +714,18 @@ const refreshNotificationsBadge = () => {
 const showNotificationsPopup = (data) => {
   const html = createNotificationHtml(data);
   const element = $(html);
-  element.prependTo('#notificationList');
+  element.hide().prependTo('#notificationList').slideDown('fast');
+
+  setTimeout(() => element.fadeOut(400), 5000);
+};
+
+const showMessagePopup = (data) => {
+  if (!data.chat.latestMessage._id) {
+    data.chat.latestMessage = data;
+  }
+  const html = createChatHtml(data.chat);
+  const element = $(html);
+  element.hide().prependTo('#notificationList').slideDown('fast');
 
   setTimeout(() => element.fadeOut(400), 5000);
 };
@@ -783,4 +795,54 @@ const getNotificationUrl = (notification) => {
   }
 
   return url;
+};
+
+const createChatHtml = (chatData) => {
+  const chatName = getChatName(chatData);
+  const image = getChatImageElements(chatData);
+  const latestMessage = getLatestMessage(chatData.latestMessage);
+  const activeClass =
+    !chatData.latestMessage ||
+    chatData.latestMessage.readBy.includes(userLoggedIn._id)
+      ? ''
+      : 'active';
+
+  return `<a href="/messages/${chatData._id}" class="resultListItem ${activeClass}">
+            ${image}
+            <div class="resultsDetailsContainer ellipsis">
+              <span class="heading ellipsis">${chatName}</span>
+              <span class="subText ellipsis">${latestMessage}</span>
+            </div>
+          </a>`;
+};
+
+const getLatestMessage = (latestMessage) => {
+  if (latestMessage !== undefined) {
+    //console.log('Latest message: ', latestMessage);
+    const sender = latestMessage.sender;
+    return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`;
+  }
+
+  return 'New chat';
+};
+
+const getChatImageElements = (chatData) => {
+  const otherChatUsers = getOtherChatUsers(chatData.users);
+  let groupChatClass = '';
+  let chatImage = getUserChatImageElement(otherChatUsers[0]);
+
+  if (otherChatUsers.length > 1) {
+    groupChatClass = 'groupChatImage';
+    chatImage += getUserChatImageElement(otherChatUsers[1]);
+  }
+
+  return `<div class='resultsImageContainer ${groupChatClass}'>${chatImage}</div>`;
+};
+
+const getUserChatImageElement = (user) => {
+  if (!user || !user.profilePic) {
+    return alert('User passed into function is invalid');
+  }
+
+  return `<img src='${user.profilePic}' alt="User's profile pic">`;
 };
