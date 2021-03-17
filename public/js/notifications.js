@@ -4,6 +4,8 @@ $(document).ready(() => {
   });
 });
 
+$('#markNotificationsAsRead').click(() => markNotificationsAsOpened());
+
 const outptNotificationList = (notifications, container) => {
   notifications.forEach((notification) => {
     const html = createNotificationHtml(notification);

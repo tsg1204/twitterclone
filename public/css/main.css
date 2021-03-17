@@ -1,13 +1,13 @@
 :root {
   --blue: #1FA2F1;
-  --buttonHoverBG: #d4edff;
-  --lightGrey: rgb(230, 236, 240);
-  --spacing: 15px;
   --blueLight: #9BD1F9;
   --blueBackground: rgba(212, 237, 255, 0.6);
+  --buttonHoverBg: #d4edff;
+  --lightGrey: rgb(230, 236, 240);
+  --spacing: 15px;
   --greyText: rgb(101, 119, 134);
-  --greyButtonText: rgba(0, 0, 0, 0.34);
-  --red: rgb(226, 34, 94);
+  --greyButtonText: rgba(0,0,0,0.34);
+  --red: rgb(226,34,94);
   --redBackground: rgba(226,34,94,0.1);
   --green: rgb(23,191,99);
   --greenBackground: rgba(23,191,99,0.1);
@@ -59,14 +59,15 @@ nav a {
   align-items: center;
   justify-content: center;
   color: #212529;
+  position: relative;
 }
 
 nav a.blue {
   color: var(--blue);
-} 
+}
 
 nav a:hover {
-  background-color: var(--buttonHoverBG);
+  background-color: var(--buttonHoverBg);
   color: var(--blue);
   border-radius: 50%;
 }
@@ -94,12 +95,11 @@ button span {
 }
 
 .mainSectionContainer {
-  padding: 0;
+  padding:  0;
   border-left: 1px solid var(--lightGrey);
   border-right: 1px solid var(--lightGrey);
   display: flex;
   flex-direction: column;
-
 }
 
 .titleContainer {
@@ -111,7 +111,6 @@ button span {
   flex-shrink: 0;
 }
 
-
 .titleContainer h1 {
   flex: 1;
 }
@@ -119,7 +118,7 @@ button span {
 .postFormContainer {
   display: flex;
   padding: var(--spacing);
-  border-bottom: 10px solid var(--lightGrey);
+  border-bottom: 10px solid rgb(230, 236, 240);
   flex-shrink: 0;
 }
 
@@ -243,7 +242,7 @@ button span {
 
 .postButtonContainer.green button:hover {
   color: var(--green);
-  background-color: var(--greenBackground);
+  background-color: var(--greenBackground)
 }
 
 .postActionContainer {
@@ -255,7 +254,6 @@ button span {
 
 .replyFlag {
   margin-bottom: 5px;
-  font-size: 13px;
 }
 
 .replyFlag a {
@@ -270,6 +268,7 @@ button span {
 .postContentContainer .header {
   display: flex;
 }
+
 .postContentContainer .header .date {
   flex: 1;
 }
@@ -290,6 +289,7 @@ button span {
   margin-left: var(--spacing);
   position: absolute;
   bottom: -66px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -440,7 +440,7 @@ button span {
 }
 
 .pinnedPostContainer {
-  border-bottom: 10px solid rgb(230, 236, 240);
+  border-bottom: 10px solid rgb(230,236,240);
 }
 
 .searchBarContainer {
@@ -452,16 +452,16 @@ button span {
 .searchBarContainer i {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 28px;
 }
 
 .searchBarContainer #searchBox {
   height: 36px;
   width: 100%;
   padding: 5px 15px 5px 40px;
-  border-radius:50px;
-  background-color:var(--lightGrey);
-  border:none;
+  border-radius: 50px;
+  background-color: var(--lightGrey);
+  border: none;
   color: var(--greyText);
 }
 
@@ -471,7 +471,6 @@ button span {
   min-height: 0;
   flex: 1;
   flex-basis: 0;
-
 }
 
 .chatTitleBar {
@@ -509,7 +508,7 @@ button span {
 
 .selectedUser {
   font-weight: 300;
-  background-color: #cbe5fe;
+  background-color: #CBE5FE;
   color: #0084ff;
   padding: 5px;
   border-radius: 3px;
@@ -573,6 +572,7 @@ button span {
   top: 0;
   right: 0;
 }
+
 .ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -662,7 +662,7 @@ button span {
 
 .chatImagesContainer img:not(:last-child),
 .chatImagesContainer .userCount {
-  margin-left:-10px;
+  margin-left: -10px;
 }
 
 #chatNameTextbox {
@@ -691,8 +691,8 @@ button span {
 
 .typingDots {
   padding: var(--spacing);
-  display: none;
   padding-bottom: 0;
+  display: none;
 }
 
 .chatMessages .message .messageContainer {
@@ -769,7 +769,7 @@ button span {
 }
 
 .chatMessages .message.last {
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
 
 .loadingSpinnerContainer {
@@ -779,7 +779,7 @@ button span {
   width: 100%;
 }
 
-.loadingSpinnerContainer  img {
+.loadingSpinnerContainer img {
   width: 50%;
   max-width: 75px;
 }
@@ -792,4 +792,39 @@ button span {
   pointer-events: none;
 }
 
+#notificationBadge,
+#messagesBadge {
+  background-color: var(--red);
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
 
+#notificationBadge.active,
+#messagesBadge.active {
+  visibility: visible;
+}
+
+#notificationList {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  width: 350px;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+#notificationList .active {
+  background-color: white;
+}

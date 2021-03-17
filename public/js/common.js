@@ -3,6 +3,11 @@ let cropper;
 let timer;
 let selectedUsers = [];
 
+$(document).ready(() => {
+  refreshMessagesBadge();
+  refreshNotificationsBadge();
+});
+
 $('#postTextarea, #replyTextarea').keyup((event) => {
   const textbox = $(event.target);
   const value = textbox.val().trim();
@@ -36,12 +41,13 @@ $('#submitPostButton, #submitReplyButton').click((event) => {
   if (isModal) {
     const id = button.data().id;
 
-    if (id === null) return console.log('Button is is null');
+    if (id === null) return console.log('Button id is null');
     data.replyTo = id;
   }
 
   $.post('/api/posts', data, (postData, status, xhr) => {
     if (postData.replyTo) {
+      emitNotification(postData.replyTo.postedBy);
       location.reload();
     } else {
       const html = createPostHtml(postData);
@@ -274,6 +280,7 @@ $(document).on('click', '.likeButton', (event) => {
 
       if (postData.likes.includes(userLoggedIn._id)) {
         button.addClass('active');
+        emitNotification(postData.postedBy);
       } else {
         button.removeClass('active');
       }
@@ -295,6 +302,7 @@ $(document).on('click', '.retweetButton', (event) => {
 
       if (postData.retweetUsers.includes(userLoggedIn._id)) {
         button.addClass('active');
+        emitNotification(postData.postedBy);
       } else {
         button.removeClass('active');
       }
@@ -328,6 +336,7 @@ $(document).on('click', '.followButton', (event) => {
       if (data.following && data.following.includes(userId)) {
         button.addClass('following');
         button.text('Following');
+        emitNotification(userId);
       } else {
         button.removeClass('following');
         button.text('Follow');
@@ -658,6 +667,8 @@ const messageReceived = (newMessage) => {
   } else {
     addChatMessageHtml(newMessage);
   }
+
+  refreshMessagesBadge();
 };
 
 const markNotificationsAsOpened = (notificationId = null, callback = null) => {
@@ -672,5 +683,29 @@ const markNotificationsAsOpened = (notificationId = null, callback = null) => {
     url: url,
     type: 'PUT',
     success: () => callback(),
+  });
+};
+
+const refreshMessagesBadge = () => {
+  $.get('/api/chats', { unreadOnly: true }, (data) => {
+    const numResults = data.length;
+
+    if (numResults > 0) {
+      $('#messagesBadge').text(numResults).addClass('active');
+    } else {
+      $('#messagesBadge').text('').removeClass('active');
+    }
+  });
+};
+
+const refreshNotificationsBadge = () => {
+  $.get('/api/notifications', { unreadOnly: true }, (data) => {
+    const numResults = data.length;
+
+    if (numResults > 0) {
+      $('#notificationBadge').text(numResults).addClass('active');
+    } else {
+      $('#notificationBadge').text('').removeClass('active');
+    }
   });
 };
